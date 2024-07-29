@@ -1,5 +1,5 @@
 # Define variables for the source file and build directory
-SRC = PLACEHOLDER.c
+SRC = word_count.c
 BUILD_DIR = exe
 EXEC = $(BUILD_DIR)/$(basename $(notdir $(SRC)))
 
