@@ -1,0 +1,9 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     '/Users/cybertuco/Code/c/projects/squeeze/squeeze'
+relocations:
+  - { offsetInCU: 0x26, offset: 0x26, size: 0x8, addend: 0x0, symName: _squeeze, symObjAddr: 0x0, symBinAddr: 0x100003C98, symSize: 0xB0 }
+  - { offsetInCU: 0x41, offset: 0x41, size: 0x8, addend: 0x0, symName: _squeeze, symObjAddr: 0x0, symBinAddr: 0x100003C98, symSize: 0xB0 }
+  - { offsetInCU: 0x8F, offset: 0x8F, size: 0x8, addend: 0x0, symName: _extended_squeeze, symObjAddr: 0xB0, symBinAddr: 0x100003D48, symSize: 0x170 }
+  - { offsetInCU: 0x107, offset: 0x107, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x220, symBinAddr: 0x100003EB8, symSize: 0xA8 }
+...
