@@ -19,17 +19,17 @@ void itos(int n, int b, char *s) {
       s[1] = '\0';
       return;
    }
-   
+
    // Convert each digit to a character
    while (n > 0 && i < MAX_LEN_DIGIT - 1) {
       int digit = n % 10;
       s[i++] = digit + '0';
       n /= 10;
    }
-   
+
    // Null-terminate the string
    s[i] = '\0';
-   
+
    // Reverse the string
    for (int j = 0; j < i / 2; j++) {
       char temp = s[j];
