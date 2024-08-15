@@ -1,0 +1,15 @@
+{
+    "configurations": [
+        {
+            "name": "(lldb) custom launch setup",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/build_osx",
+            "cwd": "${workspaceFolder}",
+            // This is to ensure VScode prints the program log in the debug console
+            "internalConsoleOptions": "openOnSessionStart", 
+            "MIMode": "lldb",
+            "preLaunchTask": "Build OSX",
+        }
+    ]
+    }

@@ -1,0 +1,15 @@
+{
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "Build OSX",
+            "command": "make build_osx",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+            "detail": "Task written thanks to 'https://www.reddit.com/r/raylib/comments/sh586x/hi_im_trying_to_get_raylib_to_work_on_mac_ive/'."
+        },
+    ],
+    "version": "2.0.0"
+}

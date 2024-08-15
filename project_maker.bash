@@ -10,7 +10,7 @@ fi
 PROJECT_NAME=$1
 
 # Create a new directory with the project name
-mkdir -p "projects/$PROJECT_NAME"
+mkdir -p "exercises/$PROJECT_NAME"
 
 # Check if the layouts directory exists
 if [ ! -d "layouts" ]; then
@@ -19,11 +19,11 @@ if [ ! -d "layouts" ]; then
 fi
 
 # Copy files from the layouts directory to the new project directory
-cp layouts/helloworld.c "projects/$PROJECT_NAME/$PROJECT_NAME.c"
-cp layouts/Makefile "projects/$PROJECT_NAME/Makefile"
+cp layouts/helloworld.c "exercises/$PROJECT_NAME/$PROJECT_NAME.c"
+cp layouts/Makefile "exercises/$PROJECT_NAME/Makefile"
 
 # Replace 'XXX' with the project name in the copied files
-for FILE in "projects/$PROJECT_NAME"/*; do
+for FILE in "exercises/$PROJECT_NAME"/*; do
     if [ -f "$FILE" ]; then
         # the empty string '' is necessary in OSX (https://stackoverflow.com/questions/39325759/sed-on-mac-extra-characters-after-p-command)
         # replacing the PLACEHOLDER string in the layout files for the provided project name
