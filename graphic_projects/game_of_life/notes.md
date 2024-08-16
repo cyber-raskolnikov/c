@@ -19,3 +19,9 @@ Settle for the implementation to always work on square environments
 - Any live cell with two or three live neighbours lives on to the next generation.
 - Any live cell with more than three live neighbours dies, as if by overpopulation.
 - Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
+
+# text centering
+if text width is 285
+calculate x0 such that 285/2 is in screenwidth/2
+
+x0 = screenwidth/2 - 285/2

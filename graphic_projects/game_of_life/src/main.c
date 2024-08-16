@@ -1,23 +1,35 @@
 #include "raylib.h"
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <time.h>
 
 
 #define ROWS 100
 #define COLS 100
 
-const unsigned int screenWidth = 800;
-const unsigned int screenHeight = 800;
+#define ALIVE_COLOR WHITE
+#define INERT_COLOR DARKBLUE
 
-const unsigned int row_side = (int) screenHeight/ROWS;
-const unsigned int col_side = (int) screenWidth/COLS;
+#define DELTA 5
 
+const unsigned int border = 75;
+
+const unsigned int screenWidth = 700 + 2*border;
+const unsigned int screenHeight = 700 + 2*border;
+
+const unsigned int row_side = (int) (screenHeight - 2*border)/ROWS;
+const unsigned int col_side = (int) (screenWidth - 2*border)/COLS;
+
+// array holding the cells information
 unsigned int state[ROWS][COLS];
+// auxiliar array used to update the state at each step
 unsigned int aux_state[ROWS][COLS];
 
 void first_state_init(int);
 void draw_state(void);
+void draw_title(void);
+void draw_fps_info(int, bool);
 void update_state(void);
 unsigned int count_cell_alive_neighbours(int, int);
 
@@ -29,9 +41,20 @@ int main(void)
     // Initialization
     //--------------------------------------------------------------------------------------
     unsigned long frame = 0;
+    unsigned int target_pseudo_fps = 3;
+    unsigned int loop_fps = 30;
+    double last_frame_time = GetTime();
+    double time_btw_frames = (double) 1.0f / target_pseudo_fps;
+    bool paused = true;
+
+    // SetConfigFlags(FLAG_WINDOW_RESIZABLE);    // Window configuration flags
 
     InitWindow(screenWidth, screenHeight, "Game of Life");
-    SetTargetFPS(1);             
+
+    // the actual FPS should not be messed with
+    // as it relates directly with the execution of the loop
+    // the approach of updating the state only on certain frame numbers make the UI much swifter
+    SetTargetFPS(loop_fps);           
     //--------------------------------------------------------------------------------------
 
     // Main game loop
@@ -39,24 +62,58 @@ int main(void)
     {
         // Update
         // ----------------------------------------------------------------------------------
+        if (IsKeyPressed(KEY_P))
+            paused = !paused;
+
+        if (IsKeyPressed(KEY_LEFT))
+        {
+            --target_pseudo_fps;
+            if (target_pseudo_fps <= 0)
+                target_pseudo_fps = 1;
+            time_btw_frames = (double) 1.0f / target_pseudo_fps;
+        }
+        if (IsKeyPressed(KEY_RIGHT))
+        {
+            ++target_pseudo_fps;
+            if (target_pseudo_fps >= 60)
+                target_pseudo_fps = 60;
+            time_btw_frames = (double) 1.0f / target_pseudo_fps;
+        }
+        
         if (frame)
-            update_state();
+        {
+            if (!paused)
+                if (GetTime()-last_frame_time >= time_btw_frames)
+                {
+                    update_state();
+                    last_frame_time = GetTime();
+                }
+        }
         else
             first_state_init(50);
             memcpy(aux_state, state, sizeof(int)*ROWS*COLS);
-        ++frame;
+        
+        if (paused && IsKeyPressed(KEY_N))
+            update_state();
 
+        ++frame;
         //----------------------------------------------------------------------------------
 
         // Draw
         //----------------------------------------------------------------------------------
         BeginDrawing();
 
-            ClearBackground(RAYWHITE);
+            ClearBackground(INERT_COLOR);
+
+            //draw border around cells
+            DrawRectangleLines(border-DELTA, border-DELTA, ROWS*row_side+DELTA*2, COLS*col_side+DELTA*2, ALIVE_COLOR);
 
             draw_state();
 
-            DrawFPS(0, 0);
+            draw_fps_info(target_pseudo_fps, paused);
+
+            draw_title();
+
 
         EndDrawing();
         //----------------------------------------------------------------------------------
@@ -99,9 +156,9 @@ void draw_state(void)
         for(j=0; j<COLS; j++)
         {
             if (state[i][j])
-                DrawRectangle(i*row_side, j*col_side, row_side, col_side, BLACK);
+                DrawRectangle(i*row_side + border, j*col_side + border, row_side, col_side, ALIVE_COLOR);
             else
-                DrawRectangle(i*row_side, j*col_side, row_side, col_side, DARKGRAY);
+                DrawRectangle(i*row_side + border, j*col_side + border, row_side, col_side, INERT_COLOR);
         }
     }
 }
@@ -159,4 +216,28 @@ void update_state(void)
 
     // copy aux state into state
     memcpy(state, aux_state, sizeof(int)*ROWS*COLS);
+}
+
+void draw_title(void)
+{
+    char* title = "GAME OF LIFE v0.1";
+    int fontsize = 40;
+    DrawText(title, screenWidth/2 - MeasureText(title, fontsize)/2, 20, fontsize, ALIVE_COLOR);
+}
+
+void draw_fps_info(int target_fps, bool paused)
+{
+    int info_font_size = 20;
+    
+    int current_fps = GetFPS();
+
+    char str[256];
+    snprintf(str, sizeof str, "Current FPS: %d", current_fps);
+    DrawText(str, DELTA*2, screenHeight-DELTA*11, info_font_size, ALIVE_COLOR);
+
+    if (paused)
+        snprintf(str, sizeof str, "Target FPS: PAUSED \t(press 'P' to resume; press 'N' to perform a single step)");
+    else
+        snprintf(str, sizeof str, "Target FPS: %d\t(use left/right arrow keys to modify; press 'P' to pause)", target_fps);
+    DrawText(str, DELTA*2, screenHeight-DELTA*6, info_font_size, ALIVE_COLOR);
 }
