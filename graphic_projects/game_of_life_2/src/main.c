@@ -31,7 +31,7 @@ int main(void)
     unsigned long frame = 0;
 
     InitWindow(screenWidth, screenHeight, "Game of Life");
-    SetTargetFPS(1);             
+    SetTargetFPS(10);             
     //--------------------------------------------------------------------------------------
 
     // Main game loop
@@ -42,8 +42,8 @@ int main(void)
         if (frame)
             update_state();
         else
-            first_state_init(50);
-            memcpy(aux_state, state, sizeof(int)*ROWS*COLS);
+            first_state_init(30);
+            memcpy(state, aux_state, sizeof(int)*ROWS*COLS);
         ++frame;
 
         //----------------------------------------------------------------------------------
@@ -146,13 +146,19 @@ void update_state(void)
             alive_neighbours = count_cell_alive_neighbours(i, j);
             if (state[i][j]) //cell is alive
             {
-                if (alive_neighbours < 2 || alive_neighbours > 3)
-                    aux_state[i][j] = 0; //dies by underpopulation or overpopulation
+                if (alive_neighbours < 2)
+                    aux_state[i][j] = 0; //dies by underpopulation
+                else if (alive_neighbours <= 3)
+                    aux_state[i][j] = 1; //lives on (might be redundant if state is kept consistent)
+                else                     // if >3 alive neighbours
+                    aux_state[i][j] = 0; //dies by overpopulation
             }
             else            //cell is dead
             {
                 if (alive_neighbours == 3)
                     aux_state[i][j] = 1; //brought to life by reproduction
+                else
+                    aux_state[i][j] = 0; //keeps being dead (might be redundant if state is kept consistent)
             }
         }
     }
